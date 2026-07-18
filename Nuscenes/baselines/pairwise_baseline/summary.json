@@ -1,0 +1,18 @@
+{
+  "encoder_id": "intfloat/e5-large-v2",
+  "device": "cuda",
+  "input_dir": "Nuscenes/results_caption",
+  "output_dir": "Nuscenes/baselines/pairwise_baseline",
+  "num_scenes_processed": 300,
+  "model_sample_counts": {
+    "deepseek-vl2-tiny": 4,
+    "Qwen2-VL-7B-Instruct": 3,
+    "llava-1.5-7b-hf": 3
+  },
+  "hallucination": {
+    "hallucinated_sentences": 108,
+    "total_sentences": 558,
+    "sentence_hallucination_rate": 0.1935483870967742,
+    "missing_hallucination_check_scenes": 0
+  }
+}

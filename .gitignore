@@ -1,0 +1,28 @@
+# Local machine configuration and environments
+.env
+.venv/
+llava_env/
+.cache/
+.vscode/
+
+# Python caches and local backup copies
+__pycache__/
+*.py[cod]
+*.bak
+
+# Dataset-derived caches and large experiment outputs (add selected final figures with git add -f)
+Nuscenes/results_caption/
+Nuscenes/results_detection_fact/
+Nuscenes/sensitivity_analysis/
+Nuscenes/baselines/**/results*/
+Nuscenes/baselines/**/candidate_scores.csv
+Nuscenes/baselines/**/selected_captions.csv
+Nuscenes/baselines/**/sim_matrices/
+Nuscenes/results/**/*.csv
+Nuscenes/results/**/*.jpg
+Nuscenes/results/**/*.jpeg
+Nuscenes/results/**/*.png
+Nuscenes/results/1.1 check_rank/可视化RPCA/
+
+# Historical local testing copy
+测试llm用+备份/
