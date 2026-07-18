@@ -119,4 +119,3 @@ dependencies:
       - triton==2.2.0
       - typing-extensions==4.12.2
       - urllib3==2.3.0
-prefix: /home/klong23/miniconda3/envs/low_rank_env
