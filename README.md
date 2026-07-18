@@ -1,4 +1,4 @@
-# LLM-Rank: Low-Rank Consensus for Reliable VLM Captions
+# A Low-Rank Consensus Method for Vision Language Model Hallucination Mitigation in Autonomous Driving
 
 This repository contains research code for selecting reliable autonomous-driving scene captions from multiple vision-language models (VLMs).
 
