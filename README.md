@@ -7,9 +7,7 @@
 This work provides a lightweight, **training-free and reference-free caption selection method** for reducing hallucinations in vision-language model (VLM) descriptions of driving scenes. Given multiple candidate descriptions of the same image, it estimates their shared semantic structure and selects the caption with the smallest deviation from that consensus. The selection step needs only the candidate captions, not the original image, ground-truth labels, or internal VLM representations.
 
 <!-- Figure 2 from the paper. Add the image to assets/figure2.png to display it here. -->
-![Overview of the low-rank consensus method (Figure 2)](assets/figure2.png)
-
-*Figure 2. Candidate VLM captions are embedded, decomposed into a low-rank consensus and residual, and ranked by their residual magnitude. The image will appear when `assets/figure2.png` is added.*
+**Figure 2 (overview of the proposed method):** The diagram will be added when the figure image is available. Please place it at `assets/figure2.png`. It illustrates candidate VLM captions being embedded, decomposed into a low-rank consensus and residual, and ranked by residual magnitude.
 
 ## Highlights
 
