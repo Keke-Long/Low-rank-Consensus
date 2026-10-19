@@ -1,13 +1,16 @@
 # Low-Rank Consensus for VLM Hallucination Mitigation in Autonomous Driving
 
+**[Official paper](https://doi.org/10.1016/j.trc.2026.106092) · [Run the demo](#quick-demo-select-one-caption-from-ten) · [Core algorithm](demo.py) · [How to cite](#citation)**
+
 **Official research code** for the paper:
 
 **Keke Long, Jiacheng Guo, Tianyun Zhang, Hongkai Yu, and Xiaopeng Li.** "A low-rank consensus method for vision language model hallucination mitigation in autonomous driving." *Transportation Research Part C*, 194 (2027), 106092. [Paper / DOI](https://doi.org/10.1016/j.trc.2026.106092)
 
 This work provides a lightweight, **training-free and reference-free caption selection method** for reducing hallucinations in vision-language model (VLM) descriptions of driving scenes. Given multiple candidate descriptions of the same image, it estimates their shared semantic structure and selects the caption with the smallest deviation from that consensus. The selection step needs only the candidate captions, not the original image, ground-truth labels, or internal VLM representations.
 
-<!-- Figure 2 from the paper. Add the image to assets/figure2.png to display it here. -->
-**Figure 2 (overview of the proposed method):** The diagram will be added when the figure image is available. Please place it at `assets/figure2.png`. It illustrates candidate VLM captions being embedded, decomposed into a low-rank consensus and residual, and ranked by residual magnitude.
+![Figure 2: candidate captions are encoded, reconstructed through a low-rank approximation, and selected by reconstruction residual.](assets/figure2.png)
+
+**Figure 2.** Overview of Low-Rank Consensus. Candidate captions for the same scene are encoded into a matrix; low-rank reconstruction captures their shared semantic structure, and the caption with the smallest reconstruction residual is selected. The SVD implementation does not explicitly impose entrywise sparsity on the residual.
 
 ## Highlights
 
@@ -15,6 +18,34 @@ This work provides a lightweight, **training-free and reference-free caption sel
 - **Low-rank semantic consensus:** Uses sentence embeddings, truncated singular value decomposition (SVD), and caption-wise residual norms.
 - **Adaptive rank:** Uses a gated spectral-gap rule to choose the retained rank for each scene.
 - **Paper results:** 87% hallucination-free caption selection accuracy on the evaluated NuScenes scenes in the heterogeneous multi-VLM setting, versus 79%–82% for the tested multi-agent debate baselines. Reported inference time was 0.84 s per scene, compared with 1.72–2.56 s for debate under the paper's evaluation conditions. These are paper results, not measurements from a new checkout.
+
+## Quick demo: select one caption from ten
+
+**Start with [`demo.py`](demo.py).** This single file contains the core algorithm and ten illustrative captions for one traffic scene. It encodes the captions, selects a rank, computes the reconstruction residuals, and prints the selected caption, retained rank, and score for each candidate.
+
+Clone the repository and run the demo in your Python environment:
+
+```bash
+git clone https://github.com/Keke-Long/Low-rank-Consensus.git
+cd Low-rank-Consensus
+python -m pip install numpy sentence-transformers
+python demo.py
+```
+
+The demo uses `intfloat/e5-large-v2` on **CPU**. The first run downloads the sentence encoder from Hugging Face; later runs reuse its local cache. Installation and the initial model download require internet access. No API key, NuScenes dataset, image, VLM deployment, or ground-truth labels are required.
+
+To try your own scene, replace `CAPTIONS` in `demo.py` with your candidate descriptions of the **same image**. The `select_caption()` function returns `best_caption`, its zero-based `best_index`, the selected `rank`, and `residuals` in the original input order. You can also import this function directly from `demo.py`.
+
+```python
+from demo import CAPTIONS, select_caption
+
+result = select_caption(CAPTIONS)  # Replace CAPTIONS with your own list of captions.
+print(result["best_caption"])
+print(result["rank"])
+print(result["residuals"])
+```
+
+These hand-written captions demonstrate usage; they are not benchmark data. The demo selects the lowest-residual candidate under the method. It does not perform factual verification or report hallucination accuracy.
 
 ## Method
 
@@ -28,7 +59,7 @@ Candidate captions -> Sentence embeddings (M)
                    -> Select the caption with the smallest score
 ```
 
-The rank is selected using a **gated spectral gap**: if the first-to-second singular-value ratio is at least `4.75`, choose rank 1. Otherwise, choose the largest spectral gap among subsequent leading singular values, subject to maximum rank `3`. This is the policy implemented in the main experiment script.
+The rank is selected using a **gated spectral gap**: if the first-to-second singular-value ratio is at least `4.75`, choose rank 1. Otherwise, compare the available gaps for ranks 2, 3, and 4, choose the rank with the largest gap, and then cap it at `3`. The demo preserves the main experiment script's raw-text encoding, unnormalized embeddings, and uncentered SVD.
 
 A smaller residual indicates **stronger agreement with the candidate set**, not a guarantee of factual correctness. Shared hallucinations may enter the consensus, and correct but unusual details may receive larger residual scores.
 
@@ -36,7 +67,8 @@ A smaller residual indicates **stronger agreement with the candidate set**, not 
 
 | File | Purpose |
 | --- | --- |
-| **[`Nuscenes/process/gated_spectral_gap_select.py`](Nuscenes/process/gated_spectral_gap_select.py)** | **Main proposed method:** adaptive rank selection, SVD reconstruction, residual scoring, final caption selection, and evaluation summaries. |
+| **[`demo.py`](demo.py)** | **Start here:** the core algorithm and a runnable ten-caption example in one file. `choose_rank_by_gated_spectral_gap()` selects the rank; `select_caption()` encodes and scores the captions. No evaluation labels are needed. |
+| [`Nuscenes/process/gated_spectral_gap_select.py`](Nuscenes/process/gated_spectral_gap_select.py) | Original experiment pipeline: per-model candidate sampling, adaptive rank selection, SVD reconstruction, residual scoring, and evaluation summaries. |
 | [`Nuscenes/process/cal_rank.py`](Nuscenes/process/cal_rank.py) | Earlier fixed-rank and multi-rank SVD analysis. |
 | [`Nuscenes/process/large_vlm_low_rank_select_r1.py`](Nuscenes/process/large_vlm_low_rank_select_r1.py) | Rank-1 comparison. |
 | [`Nuscenes/process/large_vlm_low_rank_select_r3.py`](Nuscenes/process/large_vlm_low_rank_select_r3.py) | Rank-3 comparison. |
@@ -49,13 +81,13 @@ A smaller residual indicates **stronger agreement with the candidate set**, not 
 
 Other analysis and visualization scripts are under `Nuscenes/results/` and `tools/`.
 
-## Getting started
+## Run the original CSV experiment
 
-The **low-rank selection stage** is much simpler to run than the full experiment: it operates on **already generated caption CSVs**. VLM inference and ground-truth evaluation are separate stages.
+For inference from a caption list, use the demo above. The original experiment script operates on **already generated caption CSVs** and also calculates evaluation summaries.
 
 1. Clone the repository and create a Python environment. `environment.yaml` records the original research environment; some pinned CUDA/PyTorch dependencies are platform-specific, so a fresh installation may require adjustments.
 2. Install the Python dependencies used by the selection stage, including `numpy`, `pandas`, `torch`, and `sentence-transformers`. The sentence encoder used for the experiments is [`intfloat/e5-large-v2`](https://huggingface.co/intfloat/e5-large-v2).
-3. Supply one CSV file per scene in `Nuscenes/results_caption/` (or pass your own input directory). The main selector expects the columns `Model` and `Caption`, with model identifiers matching those in `MODEL_SAMPLE_COUNTS` in the script. For *evaluation scores* it additionally expects the `hallucination_check` field.
+3. Supply one CSV file per scene in `Nuscenes/results_caption/` (or pass your own input directory). The experiment script requires the columns `Model`, `Caption`, and `hallucination_check`, with model identifiers matching those in `MODEL_SAMPLE_COUNTS` in the script. Missing or invalid evaluation labels are not handled reliably by this original script; use properly annotated inputs for its accuracy summaries.
 4. Run the main selector from the repository root:
 
 ```bash
@@ -68,7 +100,7 @@ python Nuscenes/process/gated_spectral_gap_select.py \
 
 Outputs include per-scene selected captions, chosen ranks, and evaluation summaries.
 
-**Input assumptions:** The script currently selects the first four `deepseek-vl2-tiny` captions, three `Qwen2-VL-7B-Instruct` captions, and three `llava-1.5-7b-hf` captions per scene. The input CSVs and precomputed labels are **not included** in this repository. For inference-only use without labels, the selection and reporting logic would need to be separated from the evaluation-label parsing.
+**Input assumptions:** The script currently selects the first four `deepseek-vl2-tiny` captions, three `Qwen2-VL-7B-Instruct` captions, and three `llava-1.5-7b-hf` captions per scene. The input CSVs and precomputed labels are **not included** in this repository. The standalone demo accepts captions directly without model-name quotas or evaluation labels.
 
 ### Full NuScenes experiment
 
@@ -87,6 +119,8 @@ Model downloads, substantial GPU resources, and environment-specific adjustments
 
 If you use this code or the method in your research, please cite:
 
+Keke Long, Jiacheng Guo, Tianyun Zhang, Hongkai Yu, and Xiaopeng Li. **A low-rank consensus method for vision language model hallucination mitigation in autonomous driving.** *Transportation Research Part C: Emerging Technologies*, 194, 106092, 2027. [https://doi.org/10.1016/j.trc.2026.106092](https://doi.org/10.1016/j.trc.2026.106092)
+
 ```bibtex
 @article{long2027lowrank,
   title   = {A low-rank consensus method for vision language model hallucination mitigation in autonomous driving},
@@ -95,9 +129,12 @@ If you use this code or the method in your research, please cite:
   volume  = {194},
   pages   = {106092},
   year    = {2027},
-  doi     = {10.1016/j.trc.2026.106092}
+  doi     = {10.1016/j.trc.2026.106092},
+  url     = {https://doi.org/10.1016/j.trc.2026.106092}
 }
 ```
+
+The repository also includes [`CITATION.cff`](CITATION.cff) for GitHub's **Cite this repository** feature, with the paper as the preferred citation. The publication year follows the journal volume (2027); the article was first available online in 2026.
 
 ## License
 

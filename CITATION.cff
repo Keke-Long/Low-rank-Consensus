@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this code or method, please cite the paper below."
+type: software
+title: "Low-Rank Consensus for VLM Hallucination Mitigation in Autonomous Driving"
+authors:
+  - family-names: Long
+    given-names: Keke
+  - family-names: Guo
+    given-names: Jiacheng
+  - family-names: Zhang
+    given-names: Tianyun
+  - family-names: Yu
+    given-names: Hongkai
+  - family-names: Li
+    given-names: Xiaopeng
+repository-code: "https://github.com/Keke-Long/Low-rank-Consensus"
+url: "https://github.com/Keke-Long/Low-rank-Consensus"
+preferred-citation:
+  type: article
+  title: "A low-rank consensus method for vision language model hallucination mitigation in autonomous driving"
+  authors:
+    - family-names: Long
+      given-names: Keke
+    - family-names: Guo
+      given-names: Jiacheng
+    - family-names: Zhang
+      given-names: Tianyun
+    - family-names: Yu
+      given-names: Hongkai
+    - family-names: Li
+      given-names: Xiaopeng
+  journal: "Transportation Research Part C: Emerging Technologies"
+  volume: "194"
+  start: "106092"
+  year: 2027
+  doi: "10.1016/j.trc.2026.106092"
+  url: "https://doi.org/10.1016/j.trc.2026.106092"
