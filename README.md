@@ -65,12 +65,6 @@ The rank is selected using a **gated spectral gap**: if the first-to-second sing
 
 A smaller residual indicates **stronger agreement with the candidate set**, not a guarantee of factual correctness. Shared hallucinations may enter the consensus, and correct but unusual details may receive larger residual scores.
 
-## Where is the core algorithm?
-
-Start with **[`demo.py`](demo.py)**: adaptive rank selection → low-rank reconstruction → residual scoring, with a ten-caption example.
-
-For the original experiments, see [`gated_spectral_gap_select.py`](Nuscenes/process/gated_spectral_gap_select.py).
-
 ## Run the original CSV experiment
 
 For inference from a caption list, use the demo above. The original experiment script operates on **already generated caption CSVs** and also calculates evaluation summaries.
