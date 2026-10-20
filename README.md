@@ -23,6 +23,8 @@ This work provides a lightweight, **training-free and reference-free caption sel
 
 **Start with [`demo.py`](demo.py).** This single file contains the core algorithm and ten illustrative captions for one traffic scene. It encodes the captions, selects a rank, computes the reconstruction residuals, and prints the selected caption, retained rank, and score for each candidate.
 
+If you use this code or the Low-Rank Consensus method in your research, please [cite our paper](#citation).
+
 Clone the repository and run the demo in your Python environment:
 
 ```bash
@@ -117,7 +119,7 @@ Model downloads, substantial GPU resources, and environment-specific adjustments
 
 ## Citation
 
-If you use this code or the method in your research, please cite:
+If you use this code or the Low-Rank Consensus method in your research, please cite our paper:
 
 Keke Long, Jiacheng Guo, Tianyun Zhang, Hongkai Yu, and Xiaopeng Li. **A low-rank consensus method for vision language model hallucination mitigation in autonomous driving.** *Transportation Research Part C: Emerging Technologies*, 194, 106092, 2027. [https://doi.org/10.1016/j.trc.2026.106092](https://doi.org/10.1016/j.trc.2026.106092)
 
@@ -134,8 +136,6 @@ Keke Long, Jiacheng Guo, Tianyun Zhang, Hongkai Yu, and Xiaopeng Li. **A low-ran
 }
 ```
 
-The repository also includes [`CITATION.cff`](CITATION.cff) for GitHub's **Cite this repository** feature, with the paper as the preferred citation. The publication year follows the journal volume (2027); the article was first available online in 2026.
-
 ## License
 
-**No open-source license has been specified yet.** Please contact the authors for reuse permissions beyond those granted by applicable law until a license is added.
+The source code is released under the [MIT License](LICENSE). The paper and Figure 2 are not covered by this code license; datasets and third-party models retain their respective licenses.
