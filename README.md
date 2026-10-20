@@ -67,21 +67,9 @@ A smaller residual indicates **stronger agreement with the candidate set**, not 
 
 ## Where is the core algorithm?
 
-| File | Purpose |
-| --- | --- |
-| **[`demo.py`](demo.py)** | **Start here:** the core algorithm and a runnable ten-caption example in one file. `choose_rank_by_gated_spectral_gap()` selects the rank; `select_caption()` encodes and scores the captions. No evaluation labels are needed. |
-| [`Nuscenes/process/gated_spectral_gap_select.py`](Nuscenes/process/gated_spectral_gap_select.py) | Original experiment pipeline: per-model candidate sampling, adaptive rank selection, SVD reconstruction, residual scoring, and evaluation summaries. |
-| [`Nuscenes/process/cal_rank.py`](Nuscenes/process/cal_rank.py) | Earlier fixed-rank and multi-rank SVD analysis. |
-| [`Nuscenes/process/large_vlm_low_rank_select_r1.py`](Nuscenes/process/large_vlm_low_rank_select_r1.py) | Rank-1 comparison. |
-| [`Nuscenes/process/large_vlm_low_rank_select_r3.py`](Nuscenes/process/large_vlm_low_rank_select_r3.py) | Rank-3 comparison. |
-| [`Nuscenes/process/pairwise_similarity_consensus.py`](Nuscenes/process/pairwise_similarity_consensus.py) | Pairwise cosine-similarity consensus baseline. |
-| [`Nuscenes/process/vlm_call_deepseek.py`](Nuscenes/process/vlm_call_deepseek.py) | DeepSeek-VL2 candidate generation. |
-| [`Nuscenes/process/vlm_call_llava.py`](Nuscenes/process/vlm_call_llava.py) | LLaVA candidate generation. |
-| [`Nuscenes/process/vlm_call_Qwen.py`](Nuscenes/process/vlm_call_Qwen.py) | Qwen2-VL candidate generation. |
-| [`Nuscenes/process/hallucination_check.py`](Nuscenes/process/hallucination_check.py) | Evaluation-label generation with scene images and detection facts; **not required for inference-time caption selection**. |
-| [`Nuscenes/baselines/debate_baseline/`](Nuscenes/baselines/debate_baseline/) | Multi-agent debate baseline scripts. |
+Start with **[`demo.py`](demo.py)**: adaptive rank selection → low-rank reconstruction → residual scoring, with a ten-caption example.
 
-Other analysis and visualization scripts are under `Nuscenes/results/` and `tools/`.
+For the original experiments, see [`gated_spectral_gap_select.py`](Nuscenes/process/gated_spectral_gap_select.py).
 
 ## Run the original CSV experiment
 
